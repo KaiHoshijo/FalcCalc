@@ -5,13 +5,15 @@ import java.util.Scanner;
 public class FracCalc {
 
     public static Scanner console = new Scanner(System.in);
+    public static String operation = "";
 
     public static void main(String[] args) 
     {
         // TODO: Read the input from the user and call produceAnswer with an equation
-        System.out.println("Input your operation: ");
-        String operation = console.nextLine();
-
+        while (!operation.equals("quit")) {
+            System.out.println("Input your operation: ");
+            operation = console.nextLine().toLowerCase();
+        }
 
     }
     
@@ -31,9 +33,29 @@ public class FracCalc {
         String operator = sections[1];
         String number2 = sections[2];
 
-        return number2;
+        String[] fractionParts = findFraction(number2);
+
+        return "whole:" + fractionParts[0] + " numerator:" + fractionParts[1] + " denominator:" + fractionParts[2];
     }
 
     // TODO: Fill in the space below with any helper methods that you think you will need
-    
+    public static String[] findFraction(String fraction) {
+        // returns the whole number, numerator, and denominator
+        String wholeNumber; String numerator; String denominator;
+        // whole number section
+        int wholeNumberIndex = fraction.indexOf("_");
+        wholeNumber = wholeNumberIndex != -1 ? fraction.substring(0, wholeNumberIndex) : "0";
+        // numerator and denominator section
+        int numeratorStartIndex = fraction.indexOf("_");
+        if (numeratorStartIndex != -1) {
+            int numeratorEndIndex = fraction.indexOf("/");
+            numerator = fraction.substring(numeratorStartIndex+1, numeratorEndIndex);
+            denominator = fraction.substring(numeratorEndIndex+1);
+        } else {
+            numerator = "0";
+            denominator = "1";
+        }
+        String[] output = {wholeNumber, numerator, denominator};
+        return output;
+    }
 }
