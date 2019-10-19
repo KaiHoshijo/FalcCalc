@@ -33,9 +33,12 @@ public class FracCalc {
         String operator = sections[1];
         String number2 = sections[2];
 
-        String[] fractionParts = findFraction(number2);
+        // splits the numbers into whole numbers, numerator, and denominator
+        String[] fractionParts0 = findFraction(number1);
+        String[] fractionParts1 = findFraction(number2);
 
-        return "whole:" + fractionParts[0] + " numerator:" + fractionParts[1] + " denominator:" + fractionParts[2];
+        
+        return "whole:" + fractionParts1[0] + " numerator:" + fractionParts1[1] + " denominator:" + fractionParts1[2];
     }
 
     // TODO: Fill in the space below with any helper methods that you think you will need
