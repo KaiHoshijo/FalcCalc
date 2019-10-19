@@ -13,8 +13,10 @@ public class FracCalc {
         while (!operation.equals("quit")) {
             System.out.println("Input your operation: ");
             operation = console.nextLine().toLowerCase();
+            if (!operation.equals("quit")) {
+                System.out.println(produceAnswer(operation));
+            }
         }
-
     }
     
     // ** IMPORTANT ** DO NOT DELETE THIS FUNCTION.  This function will be used to test your code
@@ -47,12 +49,21 @@ public class FracCalc {
         String wholeNumber; String numerator; String denominator;
         // whole number section
         int wholeNumberIndex = fraction.indexOf("_");
-        wholeNumber = wholeNumberIndex != -1 ? fraction.substring(0, wholeNumberIndex) : "0";
+        if (wholeNumberIndex != -1) {
+          wholeNumber = fraction.substring(0, wholeNumberIndex);
+        } else if (fraction.indexOf("/") == -1) {
+          wholeNumber = fraction;
+        } else {
+          wholeNumber = "0";
+        }
         // numerator and denominator section
         int numeratorStartIndex = fraction.indexOf("_");
+        int numeratorEndIndex = fraction.indexOf("/");
         if (numeratorStartIndex != -1) {
-            int numeratorEndIndex = fraction.indexOf("/");
             numerator = fraction.substring(numeratorStartIndex+1, numeratorEndIndex);
+            denominator = fraction.substring(numeratorEndIndex+1);
+        } else if (numeratorEndIndex != -1) {
+            numerator = fraction.substring(0, numeratorEndIndex);
             denominator = fraction.substring(numeratorEndIndex+1);
         } else {
             numerator = "0";
