@@ -43,6 +43,8 @@ public class FracCalc {
         // returns the whole number, numerator, and denominator
         String wholeNumber; String numerator; String denominator;
         // whole number section
+        // error: doesn't work when it's only a whole numer
+        // FIXME: fix it!
         int wholeNumberIndex = fraction.indexOf("_");
         wholeNumber = wholeNumberIndex != -1 ? fraction.substring(0, wholeNumberIndex) : "0";
         // numerator and denominator section
@@ -57,5 +59,42 @@ public class FracCalc {
         }
         String[] output = {wholeNumber, numerator, denominator};
         return output;
+    }
+
+    public static String evaulation(String[] num1, String operator, String[] num2) {
+      // the output of the program 
+      String output = "";
+      // figures out operator 
+      if (operator.equals("+")) {
+          // adds the numbers
+          if (num2[2].equal(num1[2])) {
+              
+          }
+      } else if (operator.equals("-")) {
+
+      } else if (operator.equals("*")) {
+
+      } else {
+
+      }
+    }
+
+    public static String greatestCommonMultiple(String[] num1, String[] num2) {
+        // check the mod of each number
+        // if not zero, cry... and multiply each denom and numer by opposing denom
+        // else celebrate and multiply the zero mod with the division of the two numbers
+        return "";
+      
+    }
+
+    public static String addWhole(String[] num1, String[] num2) {
+      if (!num1[0].equals("0") && !num2[0].equals("0")) {
+          return Integer.toString(Integer.parseInt(num1[0]) + Integer.parseInt(num2[0])) + "_";
+      } else if (!num1[0].equals("0")) {
+        return num1[0] + "_";
+      } else if (!num2[0].equals("0")) {
+        return num2[0] + "_";
+      }
+      return "";
     }
 }
