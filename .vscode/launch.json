@@ -1,0 +1,10 @@
+{
+  "configurations": [
+    {
+      "type": "java",
+      "name": "CodeLens (Launch) - FracCalc",
+      "request": "launch",
+      "mainClass": "fracCalc.FracCalc"
+    }
+  ]
+}
