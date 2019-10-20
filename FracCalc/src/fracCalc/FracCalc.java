@@ -6,6 +6,7 @@ public class FracCalc {
 
     public static Scanner console = new Scanner(System.in);
     public static String operation = "";
+    public static String output = "";
 
     public static void main(String[] args) 
     {
@@ -13,8 +14,10 @@ public class FracCalc {
         while (!operation.equals("quit")) {
             System.out.println("Input your operation: ");
             operation = console.nextLine().toLowerCase();
+            if (!operation.equals("quit")) {
+                System.out.println(produceAnswer(operation));
+            }
         }
-
     }
     
     // ** IMPORTANT ** DO NOT DELETE THIS FUNCTION.  This function will be used to test your code
@@ -33,9 +36,16 @@ public class FracCalc {
         String operator = sections[1];
         String number2 = sections[2];
 
-        String[] fractionParts = findFraction(number2);
+        // splits the numbers into whole numbers, numerator, and denominator
+        String[] fractionParts0 = findFraction(number1);
+        String[] fractionParts1 = findFraction(number2);
 
-        return "whole:" + fractionParts[0] + " numerator:" + fractionParts[1] + " denominator:" + fractionParts[2];
+        // creates "pure" fractions
+        String[] pureFraction0 = convertToFraction(fractionParts0);
+        String[] pureFraction1 = convertToFraction(fractionParts1);
+
+        return evaulation(pureFraction0, operator, pureFraction1);
+        // return "whole:" + fractionParts1[0] + " numerator:" + fractionParts1[1] + " denominator:" + fractionParts1[2];
     }
 
     // TODO: Fill in the space below with any helper methods that you think you will need
@@ -43,15 +53,21 @@ public class FracCalc {
         // returns the whole number, numerator, and denominator
         String wholeNumber; String numerator; String denominator;
         // whole number section
-        // error: doesn't work when it's only a whole numer
-        // FIXME: fix it!
         int wholeNumberIndex = fraction.indexOf("_");
-        wholeNumber = wholeNumberIndex != -1 ? fraction.substring(0, wholeNumberIndex) : "0";
+        int numeratorEndIndex = fraction.indexOf("/");
+        if (wholeNumberIndex != -1) {
+          wholeNumber = fraction.substring(0, wholeNumberIndex);
+        } else if (numeratorEndIndex == -1) {
+          wholeNumber = fraction;
+        } else {
+          wholeNumber = "0";
+        }
         // numerator and denominator section
-        int numeratorStartIndex = fraction.indexOf("_");
-        if (numeratorStartIndex != -1) {
-            int numeratorEndIndex = fraction.indexOf("/");
-            numerator = fraction.substring(numeratorStartIndex+1, numeratorEndIndex);
+        if (wholeNumberIndex != -1) {
+            numerator = fraction.substring(wholeNumberIndex+1, numeratorEndIndex);
+            denominator = fraction.substring(numeratorEndIndex+1);
+        } else if (numeratorEndIndex != -1) {
+            numerator = fraction.substring(0, numeratorEndIndex);
             denominator = fraction.substring(numeratorEndIndex+1);
         } else {
             numerator = "0";
@@ -62,39 +78,122 @@ public class FracCalc {
     }
 
     public static String evaulation(String[] num1, String operator, String[] num2) {
-      // the output of the program 
-      String output = "";
-      // figures out operator 
-      if (operator.equals("+")) {
-          // adds the numbers
-          if (num2[2].equal(num1[2])) {
-              
-          }
-      } else if (operator.equals("-")) {
+        output = "";
+        // figures out operator 
+        if (operator.equals("+")) {
+            // adds the numbers
+            // fractions
+            output += addFractions(num1, num2);
+        } else if (operator.equals("-")) {
+            // subtracts the numbers
+            // fractions
+            output += subtractFractions(num1, num2);
+        }
+        // } else if (operator.equals("*")) {
 
-      } else if (operator.equals("*")) {
+        // } else {
 
-      } else {
-
-      }
+        // }
+        String[] fractionOutput = output.split("/");
+        return reduceToWhole(fractionOutput);
     }
 
-    public static String greatestCommonMultiple(String[] num1, String[] num2) {
-        // check the mod of each number
-        // if not zero, cry... and multiply each denom and numer by opposing denom
-        // else celebrate and multiply the zero mod with the division of the two numbers
-        return "";
-      
-    }
-
-    public static String addWhole(String[] num1, String[] num2) {
+    public static String addFractions(String[] num1, String[] num2) {
       if (!num1[0].equals("0") && !num2[0].equals("0")) {
-          return Integer.toString(Integer.parseInt(num1[0]) + Integer.parseInt(num2[0])) + "_";
-      } else if (!num1[0].equals("0")) {
-        return num1[0] + "_";
-      } else if (!num2[0].equals("0")) {
-        return num2[0] + "_";
+          String[] newFractions = greatestCommonMultiple(num1, num2);
+          // updating the first numerator and denominator
+          num1[0] = newFractions[0];
+          num1[1] = newFractions[1];
+          // updating the second numerator and denominator
+          num2[0] = newFractions[2];
+          num2[1] = newFractions[3];
+          int combined = Integer.parseInt(num1[0]) + Integer.parseInt(num2[0]);
+          return Integer.toString(combined) + "/" + num2[1];
+      } else if (num1[0].equals("0")) {
+          // adding the first fraction
+          return num2[0] + "/" + num2[1];
+      } else if (num2[0].equals("0")) {
+          // adding the second fraction
+          return num1[0] + "/" + num1[1];
       }
       return "";
     }
+
+    public static String subtractFractions(String[] num1, String[] num2) {
+        if (!num1[0].equals("0") && !num2[0].equals("0")) {
+            String[] newFractions = greatestCommonMultiple(num1, num2);
+            // updating the first numerator and denominator
+            num1[0] = newFractions[0];
+            num1[1] = newFractions[1];
+            // updating the second numerator and denominator
+            num2[0] = newFractions[2];
+            num2[1] = newFractions[3];
+            int difference = Integer.parseInt(num1[0]) - Integer.parseInt(num2[0]);
+            return Integer.toString(difference) + "/" + num1[1];
+        } else if (num2[0].equals("0")) {
+            // subtracting the first fraction
+            return num1[0] + "/" + num1[1];
+        } else if (num1[0].equals("0")) {
+            // subtracting the second fraction
+            return "-" + num2[0] + "/" + num2[1];
+        }
+        return "";
+    }
+
+    public static String[] greatestCommonMultiple(String[] num1, String[] num2) {
+        // check the mod of each number
+        int numerator1 = Integer.parseInt(num1[0]);
+        int numerator2 = Integer.parseInt(num2[0]);
+        int denominator1 = Integer.parseInt(num1[1]);
+        int denominator2 = Integer.parseInt(num2[1]);
+
+        int mod1 = denominator1 % denominator2;
+        int mod2 = denominator2 % denominator1;
+        // if not zero, cry... and multiply each denom and numer by opposing denom
+        if (mod1 != 0 && mod2 != 0) {
+            numerator1 *= denominator2;
+            numerator2 *= denominator1;
+            denominator1 *= denominator2;
+            denominator2 = denominator1;
+        } else if (denominator1 == denominator2) {
+            // generating a new fraction
+            String[] newFractions = {Integer.toString(numerator1), Integer.toString(denominator1), 
+          Integer.toString(numerator2), Integer.toString(denominator1)};
+            return newFractions;
+        }
+        // else celebrate and multiply the zero mod with the division of the two numbers
+        else if (mod1 == 0) {
+          numerator2 *= denominator1 / denominator2;
+          denominator2 *= denominator1 / denominator2;
+        } else if (mod2 == 0) {
+          numerator1 *= denominator2 / denominator1;
+          denominator1 *= denominator2 / denominator1;
+        }
+        // generating a new fraction
+        String[] newFractions = {Integer.toString(numerator1), Integer.toString(denominator1), 
+          Integer.toString(numerator2), Integer.toString(denominator1)};
+        return newFractions;
+    }
+
+    public static String[] convertToFraction(String[] num) {
+        int product = Integer.parseInt(num[0]) * Integer.parseInt(num[2]);
+        String newNumerator = Integer.toString(Math.abs(product) + Integer.parseInt(num[1]));
+        if (product < 0) {
+          newNumerator = "-" + newNumerator;
+        }
+        String[] pureFraction = {newNumerator, num[2]};
+        return pureFraction;
+    }
+
+    public static String reduceToWhole(String[] num) {
+        int wholeNumber = Integer.parseInt(num[0]) / Integer.parseInt(num[1]);
+        int numerator = Integer.parseInt(num[0]) % Integer.parseInt(num[1]);
+        if (wholeNumber == 0) {
+          return num[0] + "/" + num[1];
+        } else if (numerator == 0) {
+          return Integer.toString(wholeNumber);
+        }
+        return Integer.toString(wholeNumber) + "_" + Integer.toString(Math.abs(numerator)) + "/" + num[1];
+    }
+
 }
