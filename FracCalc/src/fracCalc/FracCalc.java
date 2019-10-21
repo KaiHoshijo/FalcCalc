@@ -73,6 +73,9 @@ public class FracCalc {
         } else if (numeratorEndIndex != -1) {
             numerator = fraction.substring(0, numeratorEndIndex);
             denominator = fraction.substring(numeratorEndIndex+1);
+        } else if (numeratorEndIndex != -1) {
+            numerator = fraction.substring(0, numeratorEndIndex);
+            denominator = fraction.substring(numeratorEndIndex+1);
         } else {
             numerator = "0";
             denominator = "1";
