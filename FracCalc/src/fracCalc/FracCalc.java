@@ -1,5 +1,6 @@
 package fracCalc;
 
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class FracCalc {
@@ -43,6 +44,9 @@ public class FracCalc {
         // creates "pure" fractions
         String[] pureFraction0 = convertToFraction(fractionParts0);
         String[] pureFraction1 = convertToFraction(fractionParts1);
+
+        // System.out.println(Arrays.toString(pureFraction0));
+        // System.out.println(Arrays.toString(pureFraction1));
 
         return evaulation(pureFraction0, operator, pureFraction1);
         // return "whole:" + fractionParts1[0] + " numerator:" + fractionParts1[1] + " denominator:" + fractionParts1[2];
@@ -88,12 +92,13 @@ public class FracCalc {
             // subtracts the numbers
             // fractions
             output += subtractFractions(num1, num2);
+        } else if (operator.equals("*")) {
+            // multiples the numbers
+            output += multiplyFractions(num1, num2);
+        } else if (operator.equals("/")) {
+            // divides the numbers
+            output += divideFractions(num1, num2);
         }
-        // } else if (operator.equals("*")) {
-
-        // } else {
-
-        // }
         String[] fractionOutput = output.split("/");
         return reduceToWhole(fractionOutput);
     }
@@ -138,6 +143,26 @@ public class FracCalc {
             return "-" + num2[0] + "/" + num2[1];
         }
         return "";
+    }
+
+    public static String multiplyFractions(String[] num1, String[] num2) {
+        int numerator = Integer.parseInt(num1[0]) * Integer.parseInt(num2[0]);
+        int denominator = Integer.parseInt(num1[1]) * Integer.parseInt(num2[1]);
+        return numerator + "/" + denominator;
+    }
+
+    public static String divideFractions(String[] num1, String[] num2) {
+      int numerator = Integer.parseInt(num2[0]);
+      int denominator = Integer.parseInt(num2[1]);
+      if (numerator < 0) {
+          num2[0] = "-" + Integer.toString(denominator);
+          num2[1] = Integer.toString(Math.abs(numerator));
+      } else {
+        num2[0] = Integer.toString(denominator);
+        num2[1] = Integer.toString(numerator);
+      }
+      String[] newNum2 = {num2[0], num2[1]};
+      return multiplyFractions(num1, newNum2);
     }
 
     public static String[] greatestCommonMultiple(String[] num1, String[] num2) {
