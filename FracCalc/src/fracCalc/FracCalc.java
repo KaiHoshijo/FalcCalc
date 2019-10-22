@@ -228,21 +228,24 @@ public class FracCalc {
     // currently not reducing all the way
     public static String[] reduce(String[] num) {
         int numerator = Integer.parseInt(num[0]);
-        int denomintaor = Integer.parseInt(num[1]);
-        int original = (denomintaor / 2) + 1;
+        int denominator = Integer.parseInt(num[1]);
         if (numerator == 0) {
             String[] output = {"0", num[1]};
             return output;
         } else {
-            for (int i = 2; i <= (denomintaor / 2) + 1; i++) {
-                if (numerator / i == numerator / (i + 0.0) && denomintaor / i == denomintaor / (i + 0.0)) {
+            int i = 2;
+            while(i < (denominator / 2) + 1) {
+                if (numerator % i == 0 && denominator % i == 0) {
                     numerator /= i;
-                    denomintaor /= i;
+                    denominator /= i;
+                    System.out.println(numerator + " " + denominator);
                     i = 2;
+                } else {
+                  i++;
                 }
             }
         }
-        String[] output = {Integer.toString(numerator), Integer.toString(denomintaor)};
+        String[] output = {Integer.toString(numerator), Integer.toString(denominator)};
         return output;
     }
 
