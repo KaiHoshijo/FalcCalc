@@ -103,9 +103,10 @@ public class FracCalc {
             output += divideFractions(num1, num2);
         }
         String[] fractionOutput = output.split("/");
-        return reduceToWhole(reduce(fractionOutput));
+        return reduce(fractionOutput);
     }
 
+    // operations
     public static String addFractions(String[] num1, String[] num2) {
         if (!num1[0].equals("0") && !num2[0].equals("0")) {
             String[] newFractions = greatestCommonMultiple(num1, num2);
@@ -149,14 +150,20 @@ public class FracCalc {
     }
 
     public static String multiplyFractions(String[] num1, String[] num2) {
+        // multiplies the numerators of the two fractions
         int numerator = Integer.parseInt(num1[0]) * Integer.parseInt(num2[0]);
+        // multiplies the denominators of the two fractions
         int denominator = Integer.parseInt(num1[1]) * Integer.parseInt(num2[1]);
+        // returns the new fraction
         return numerator + "/" + denominator;
     }
 
     public static String divideFractions(String[] num1, String[] num2) {
+        // gets the numerator and denomintaor of the second fraction
         int numerator = Integer.parseInt(num2[0]);
         int denominator = Integer.parseInt(num2[1]);
+        // copy dot flip or gets the opposite of the second fraction
+        // and multiples it to the first fraction
         if (numerator < 0) {
             num2[0] = "-" + Integer.toString(denominator);
             num2[1] = Integer.toString(Math.abs(numerator));
@@ -164,10 +171,13 @@ public class FracCalc {
             num2[0] = Integer.toString(denominator);
             num2[1] = Integer.toString(numerator);
         }
+        // creates the new fraction
         String[] newNum2 = {num2[0], num2[1]};
+        // returns the produce of the first fraction and the new second fraction
         return multiplyFractions(num1, newNum2);
     }
 
+    // methods used to simplify the use of fractions
     public static String[] greatestCommonMultiple(String[] num1, String[] num2) {
         // check the mod of each number
         int numerator1 = Integer.parseInt(num1[0]);
@@ -203,36 +213,53 @@ public class FracCalc {
         return newFractions;
     }
 
+    // used to convert the numbers with whole numbers to improper fractions
     public static String[] convertToFraction(String[] num) {
+        // gets the improper version of each fraction
         int product = Integer.parseInt(num[0]) * Integer.parseInt(num[2]);
+        // adds the whole number in the form of the fraction to the current numerator
         String newNumerator = Integer.toString(Math.abs(product) + Integer.parseInt(num[1]));
+        // ensures that the number stays negative
         if (product < 0) {
             newNumerator = "-" + newNumerator;
         }
+        // returns the newly improper fraction
         String[] pureFraction = {newNumerator, num[2]};
         return pureFraction;
     }
 
+    // reduces the improper fractions back to whole numebers
     public static String reduceToWhole(String[] num) {
+        // does the opposite of convertToFraction
+        // finds the whole number given by the division of numerator and denominator
         int wholeNumber = Integer.parseInt(num[0]) / Integer.parseInt(num[1]);
+        // finds what would be left in the numerator
         int numerator = Integer.parseInt(num[0]) % Integer.parseInt(num[1]);
+        // returns zero if numerator and whole number are zero
         if (wholeNumber == 0 && numerator == 0) {
             return "0";
         } else if (wholeNumber == 0) {
+            // returns only a fraction
             return num[0] + "/" + num[1];
         } else if (numerator == 0) {
+            // returns only a whole number
             return Integer.toString(wholeNumber);
         }
+        // returns a whole number PLUS the fraction
         return Integer.toString(wholeNumber) + "_" + Integer.toString(Math.abs(numerator)) + "/" + num[1];
     }
-    // currently not reducing all the way
-    public static String[] reduce(String[] num) {
+    
+    // reduces the fraction and then returns the whole number and the left over fraction
+    public static String reduce(String[] num) {
+        // gets the current numerator and denominator
         int numerator = Integer.parseInt(num[0]);
         int denominator = Integer.parseInt(num[1]);
         if (numerator == 0) {
+            // returns 0 into whole numbers
             String[] output = {"0", num[1]};
-            return output;
+            return reduceToWhole(output);
         } else {
+            // reduces the number WHILE it can continue to reduce
             int i = 2;
             while(i < (denominator / 2) + 1) {
                 if (numerator % i == 0 && denominator % i == 0) {
@@ -246,7 +273,8 @@ public class FracCalc {
             }
         }
         String[] output = {Integer.toString(numerator), Integer.toString(denominator)};
-        return output;
+        // returns the newly reduced fraction to reduceToWhole
+        return reduceToWhole(output);
     }
 
 }
