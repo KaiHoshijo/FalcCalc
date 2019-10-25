@@ -33,22 +33,56 @@ public class FracCalc {
     {
         // TODO: Implement this function to produce the solution to the input
         String[] sections = input.split(" ");
-        String number1 = sections[0];
-        String operator = sections[1];
-        String number2 = sections[2];
+        String output = "";
+        // doesn't do PEMDAS
+        for (int i = 1; i <= sections.length - 2;) {
+            String number1 = sections[i-1];
+            String operator = sections[i];
+            String number2 = sections[i+1];
 
-        // splits the numbers into whole numbers, numerator, and denominator
-        String[] fractionParts0 = findFraction(number1);
-        String[] fractionParts1 = findFraction(number2);
+            // splits the numbers into whole numbers, numerator, and denominator
+            String[] fractionParts0 = findFraction(number1);
+            String[] fractionParts1 = findFraction(number2);
 
-        // creates "pure" fractions
-        String[] pureFraction0 = convertToFraction(fractionParts0);
-        String[] pureFraction1 = convertToFraction(fractionParts1);
+            // creates "pure" fractions
+            String[] pureFraction0 = convertToFraction(fractionParts0);
+            String[] pureFraction1 = convertToFraction(fractionParts1);
 
-        // System.out.println(Arrays.toString(pureFraction0));
-        // System.out.println(Arrays.toString(pureFraction1));
+            if (pureFraction0[1].equals("0") || pureFraction1[1].equals("0") || number2.equals("0")) {
+                return "Error: Cannot divide by 0";
+            }
 
-        return evaulation(pureFraction0, operator, pureFraction1);
+            if (operator.length() != 1) {
+                return "Error: Invalid input";
+            }
+
+            // System.out.println(Arrays.toString(pureFraction0));
+            // System.out.println(Arrays.toString(pureFraction1));
+            if (output.length() == 0) {
+                output = evaulation(pureFraction0, operator, pureFraction1);
+            } else {
+                String[] pureFractionOutput = convertToFraction(findFraction(output));
+                output = evaulation(pureFractionOutput, operator, pureFraction1);
+            }
+            i += 2;
+        }
+//        String number1 = sections[0];
+//        String operator = sections[1];
+//        String number2 = sections[2];
+//
+//        // splits the numbers into whole numbers, numerator, and denominator
+//        String[] fractionParts0 = findFraction(number1);
+//        String[] fractionParts1 = findFraction(number2);
+//
+//        // creates "pure" fractions
+//        String[] pureFraction0 = convertToFraction(fractionParts0);
+//        String[] pureFraction1 = convertToFraction(fractionParts1);
+//
+//        // System.out.println(Arrays.toString(pureFraction0));
+//        // System.out.println(Arrays.toString(pureFraction1));
+//
+//        return evaulation(pureFraction0, operator, pureFraction1);
+        return output;
         // return "whole:" + fractionParts1[0] + " numerator:" + fractionParts1[1] + " denominator:" + fractionParts1[2];
     }
 
@@ -248,7 +282,7 @@ public class FracCalc {
         // returns a whole number PLUS the fraction
         return Integer.toString(wholeNumber) + "_" + Integer.toString(Math.abs(numerator)) + "/" + num[1];
     }
-    
+
     // reduces the fraction and then returns the whole number and the left over fraction
     public static String reduce(String[] num) {
         // gets the current numerator and denominator
@@ -265,10 +299,9 @@ public class FracCalc {
                 if (numerator % i == 0 && denominator % i == 0) {
                     numerator /= i;
                     denominator /= i;
-                    System.out.println(numerator + " " + denominator);
                     i = 2;
                 } else {
-                  i++;
+                    i++;
                 }
             }
         }
