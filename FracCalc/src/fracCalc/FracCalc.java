@@ -33,38 +33,40 @@ public class FracCalc {
     {
         // TODO: Implement this function to produce the solution to the input
         String[] sections = input.split(" ");
+        if (sections.length % 2 != 1 || sections.length <= 1) {
+            return "Error: Invalid input";
+        }
         String output = "";
-        // doesn't do PEMDAS
-        for (int i = 1; i <= sections.length - 2;) {
-            String number1 = sections[i-1];
-            String operator = sections[i];
-            String number2 = sections[i+1];
+        try {
+            for (int i = 1; i <= sections.length - 2; ) {
+                String number1 = sections[i - 1];
+                String operator = sections[i];
+                String number2 = sections[i + 1];
 
-            // splits the numbers into whole numbers, numerator, and denominator
-            String[] fractionParts0 = findFraction(number1);
-            String[] fractionParts1 = findFraction(number2);
+                // splits the numbers into whole numbers, numerator, and denominator
+                String[] fractionParts0 = findFraction(number1);
+                String[] fractionParts1 = findFraction(number2);
 
-            // creates "pure" fractions
-            String[] pureFraction0 = convertToFraction(fractionParts0);
-            String[] pureFraction1 = convertToFraction(fractionParts1);
+                // creates "pure" fractions
+                String[] pureFraction0 = convertToFraction(fractionParts0);
+                String[] pureFraction1 = convertToFraction(fractionParts1);
 
-            if (pureFraction0[1].equals("0") || pureFraction1[1].equals("0") || number2.equals("0")) {
-                return "Error: Cannot divide by 0";
+                if (pureFraction0[1].equals("0") || pureFraction1[1].equals("0") || (number2.equals("0") && operator.equals("/"))) {
+                    return "Error: Cannot divide by 0";
+                }
+
+                // System.out.println(Arrays.toString(pureFraction0));
+                // System.out.println(Arrays.toString(pureFraction1));
+                if (output.length() == 0) {
+                    output = evaulation(pureFraction0, operator, pureFraction1);
+                } else {
+                    String[] pureFractionOutput = convertToFraction(findFraction(output));
+                    output = evaulation(pureFractionOutput, operator, pureFraction1);
+                }
+                i += 2;
             }
-
-            if (operator.length() != 1) {
-                return "Error: Invalid input";
-            }
-
-            // System.out.println(Arrays.toString(pureFraction0));
-            // System.out.println(Arrays.toString(pureFraction1));
-            if (output.length() == 0) {
-                output = evaulation(pureFraction0, operator, pureFraction1);
-            } else {
-                String[] pureFractionOutput = convertToFraction(findFraction(output));
-                output = evaulation(pureFractionOutput, operator, pureFraction1);
-            }
-            i += 2;
+        } catch (Exception e) {
+            return "Error: Invalid input";
         }
 //        String number1 = sections[0];
 //        String operator = sections[1];
